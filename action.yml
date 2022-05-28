@@ -1,15 +1,15 @@
-name: 'Create Cura package'
-description: 'Create .curapackage files from plugin repository'
+name: 'Create Cura packages'
+description: 'Create .curapackage files from Cura plugin source repository'
 inputs:
-  source_folder:
+  source_folder:  # id of input
     description: 'source folder of the Cura plugin'
     required: true
     default: ''
-  plugin_id:
-    description: 'The Cura plugin's id'
+  plugin_id:  # id of input
+    description: 'The Cura plugin id'
     required: false
     default: ''
-  package_info_path:
+  package_info_path:  # id of input
     description: 'The package.json file path'
     required: false
     default: ''
