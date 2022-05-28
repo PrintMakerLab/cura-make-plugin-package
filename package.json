@@ -1,13 +1,13 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "cura-make-plugin-package",
+  "version": "1.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Github TypeScript action",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write '**/*.ts'",
-    "format-check": "prettier --check '**/*.ts'",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
@@ -15,19 +15,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/Jeredian/cura-make-plugin-package.git"
   },
   "keywords": [
-    "actions",
-    "node",
-    "setup"
+    "GitHub",
+    "Actions",
+    "TypeScript"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.8.2"
+    "@actions/core": "^1.8.2",
+    "archiver": "^5.3.1"
   },
   "devDependencies": {
+    "@types/archiver": "^5.3.1",
     "@types/node": "^17.0.36",
     "@typescript-eslint/parser": "^5.26.0",
     "@vercel/ncc": "^0.31.1",

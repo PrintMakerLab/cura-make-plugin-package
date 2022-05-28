@@ -1,105 +1,65 @@
-<p align="center">
-  <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
-</p>
+# Create package for Cura's plugin 
 
-# Create a JavaScript Action using TypeScript
+A github workflow action that creates .curapackage files from Cura plugin source repositories.
+The action parses plugin.info to detect the compatible major Cura SDK versions and creates a .curapackage file for
+each SDK version.
 
-Use this template to bootstrap the creation of a TypeScript action.:rocket:
+This repository based on [cura-plugin-packager-action](https://github.com/fieldOfView/cura-plugin-packager-action) but uses typescript instead of javascript.
 
-This template includes compilation support, tests, a validation workflow, publishing, and versioning guidance.  
+## Inputs
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+| Parameter               | Description                                                | Default  |
+| ----------------------- | ---------------------------------------------------------- | -------- |
+| `source_folder`         | Path to the checked out source of the Cura plugin.         | ``       |
+| `plugin_id`             | Plugin id, in Cura, can be used to override package.json   | ``       |
+| `package_info_path`     | Path to a package.json                                     | ``       |
 
-## Create an action from this template
+If no `package_info_path` is specified a template `package.json` file is used. If the referenced `package.json`
+does not include a `package_id` field, the `plugin_id` argument must be specified. If both the `package.json` file
+contains a `package_id` and the `plugin_id` argument is specified, then the `plugin_id` argument is used.
 
-Click the `Use this Template` and provide the new repo details for your action
+## Outputs
 
-## Code in Main
+The following output values can be accessed via `${{ steps.<step-id>.outputs.<output-name> }}`:
 
-> First, you'll need to have a reasonably modern version of `node` handy. This won't work with versions older than 9, for instance.
+| Name                    | Description                                            | Type          |
+| ----------------------- | ------------------------------------------------------ | ------------- |
+| `packages`              | List of created .curapackage files                     | array<string> |
 
-Install the dependencies  
-```bash
-$ npm install
-```
 
-Build the typescript and package it for distribution
-```bash
-$ npm run build && npm run package
-```
+## Example
 
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
-
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
-
-...
-```
-
-## Change action.yml
-
-The action.yml defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Publish to a distribution branch
-
-Actions are run from GitHub repos so we will checkin the packed dist folder. 
-
-Then run [ncc](https://github.com/zeit/ncc) and push the results:
-```bash
-$ npm run package
-$ git add dist
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Note: We recommend using the `--license` option for ncc, which will create a license file for all of the production node modules used in your project.
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing `./` in a workflow in your repo (see [test.yml](.github/workflows/test.yml))
+The workflow below, which is triggered when a new tag starting with the letter `v` is pushed, checks out the repository
+into a folder named `build` using `actions/checkout`, creates packages while referencing the `package.json` file
+included in the repository, and uses `marvinpinto/action-automatic-releases` to create a release with the .curapackage
+files attached.
 
 ```yaml
-uses: ./
-with:
-  milliseconds: 1000
+name: "Cura-plugin-package release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  create-curapackages:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: "build"
+          submodules: "recursive"
+      - uses: jeredian/cura-make-plugin-package@main
+        with:
+          source_folder: "build"
+          package_info_path: "build/.github/workflows/package.json"
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            *.curapackage
 ```
-
-See the [actions tab](https://github.com/actions/typescript-action/actions) for runs of this action! :rocket:
-
-## Usage:
-
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
