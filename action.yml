@@ -1,21 +1,21 @@
-name: 'Create Cura package'
-description: 'Create .curapackage files from plugin repository'
+name: 'Create Cura Packages'
+description: 'Create .curapackage files from Cura plugin source repository'
 inputs:
-  source_folder:
-    description: 'source folder of the Cura plugin'
+  source_folder:  # id of input
+    description: 'checked out source of the Cura plugin'
     required: true
     default: ''
-  plugin_id:
-    description: 'The Cura plugin's id'
+  plugin_id:  # id of input
+    description: 'id of the Cura plugin'
     required: false
     default: ''
-  package_info_path:
-    description: 'The package.json file path'
+  package_info_path:  # id of input
+    description: 'path of the package.json file'
     required: false
     default: ''
 outputs:
   packages:
-    description: 'List of generated packages'
+    description: 'list of generated packages'
 runs:
   using: 'node16'
   main: 'dist/index.js'
