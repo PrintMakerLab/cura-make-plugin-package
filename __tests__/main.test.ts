@@ -1,7 +1,6 @@
 import * as process from 'process';
 import * as cp from 'child_process';
 import * as path from 'path';
-import { expect, test } from '@jest/globals';
 
 //TODO skip tests for now and made them asap
 // shows how the runner will run a javascript action with env / stdout protocol
