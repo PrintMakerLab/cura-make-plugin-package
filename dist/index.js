@@ -51,9 +51,7 @@ function run() {
             const sourcePath = core.getInput('source_folder');
             let pluginId = core.getInput('plugin_id');
             let packageInfoPath = core.getInput('package_info_path');
-            const staticFilePath = fs.existsSync(`${__dirname}/files`)
-                ? `${__dirname}/files`
-                : `${__dirname}/dist/files`;
+            const staticFilePath = fs.existsSync(`${__dirname}/files`) ? `${__dirname}/files` : `${__dirname}/dist/files`;
             // get package info, or load "empty" package info template
             if (packageInfoPath === '' || !fs.existsSync(packageInfoPath)) {
                 packageInfoPath = `${staticFilePath}/package.json`;
@@ -86,13 +84,13 @@ function run() {
             const pluginVersion = pluginInfo['version'];
             core.info(`Creating curapackages for ${pluginId} ${pluginVersion}...`);
             // copy plugin info into package info
-            packageInfo['package_id'] = pluginId;
-            packageInfo['package_version'] = pluginVersion;
-            packageInfo['display_name'] = pluginInfo['name'];
+            packageInfo.package_id = pluginId;
+            packageInfo.package_version = pluginVersion;
+            packageInfo.display_name = pluginInfo.name;
             if (packageInfoPath === `${staticFilePath}/package.json`) {
-                packageInfo['description'] = pluginInfo['description'];
+                packageInfo.description = pluginInfo.description;
             }
-            const supportedSDKVersions = pluginInfo['supported_sdk_versions'];
+            const supportedSDKVersions = pluginInfo.supported_sdk_versions;
             const majorSDKVersions = new Set(supportedSDKVersions.map(function (versionString) {
                 return parseInt(versionString.split('.')[0]);
             }));
@@ -119,12 +117,12 @@ function run() {
                 const archiveFileName = `${pluginId}_v${pluginVersion}_Cura${curaVersions}.curapackage`;
                 core.info(` -- ${archiveFileName}...`);
                 packageFiles.push(archiveFileName);
-                packageInfo['sdk_version'] = majorVersion;
-                packageInfo['sdk_version_semver'] = semanticVersion;
+                packageInfo.sdk_version = majorVersion;
+                packageInfo.sdk_version_semver = semanticVersion;
                 // create a file to stream archive data to.
                 const output = fs.createWriteStream(archiveFileName);
                 const archive = (0, archiver_1.default)('zip', {
-                    zlib: { level: 9 } // Sets the compression level.
+                    zlib: { level: 9 }, // Sets the compression level.
                 });
                 // listen for all archive data to be written
                 // "close" event is fired only when a file descriptor is involved
@@ -155,12 +153,10 @@ function run() {
                 });
                 // pipe archive data to the file
                 archive.pipe(output);
-                archive.directory(sourcePath, `files/plugins/${pluginId}`, file => file.name.startsWith('.git') || file.name.includes('/.git')
-                    ? false
-                    : file);
+                archive.directory(sourcePath, `files/plugins/${pluginId}`, (file) => file.name.startsWith('.git') || file.name.includes('/.git') ? false : file);
                 archive.append(JSON.stringify(packageInfo), { name: 'package.json' });
                 archive.file(`${staticFilePath}/[Content_Types].xml`, {
-                    name: '[Content_Types].xml'
+                    name: '[Content_Types].xml',
                 });
                 archive.directory(`${staticFilePath}/_rels`, '_rels');
                 // finalize the archive (ie we are done appending files but streams have to finish yet)
