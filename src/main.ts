@@ -53,10 +53,10 @@ async function run(): Promise<void> {
 		packageInfo.package_version = pluginVersion;
 		packageInfo.display_name = pluginInfo.name;
 		if (packageInfoPath === `${staticFilePath}/package.json`) {
-			packageInfo['description'] = pluginInfo['description'];
+			packageInfo.description = pluginInfo.description;
 		}
 
-		const supportedSDKVersions = pluginInfo['supported_sdk_versions'];
+		const supportedSDKVersions = pluginInfo.supported_sdk_versions;
 		const majorSDKVersions = new Set(
 			supportedSDKVersions.map(function (versionString) {
 				return parseInt(versionString.split('.')[0]);
@@ -92,8 +92,8 @@ async function run(): Promise<void> {
 			core.info(` -- ${archiveFileName}...`);
 			packageFiles.push(archiveFileName);
 
-			packageInfo['sdk_version'] = majorVersion;
-			packageInfo['sdk_version_semver'] = semanticVersion;
+			packageInfo.sdk_version = majorVersion;
+			packageInfo.sdk_version_semver = semanticVersion;
 
 			// create a file to stream archive data to.
 			const output = fs.createWriteStream(archiveFileName);
