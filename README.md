@@ -48,11 +48,11 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: "build"
           submodules: "recursive"
-      - uses: jeredian/cura-make-plugin-package@main
+      - uses: PrintMakerLab/cura-make-plugin-package@main
         with:
           source_folder: "build"
           package_info_path: "build/.github/workflows/package.json"
