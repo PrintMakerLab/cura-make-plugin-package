@@ -6,7 +6,7 @@ updates:
       interval: daily
     ignore:
       - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
+        update-types: ["version-update:semver-minor"]
 
   - package-ecosystem: npm
     directory: /
@@ -14,4 +14,4 @@ updates:
       interval: daily
     ignore:
       - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
+        update-types: ["version-update:semver-minor"]
